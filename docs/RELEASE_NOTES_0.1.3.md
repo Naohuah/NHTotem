@@ -66,4 +66,12 @@ NHTotem-CraftEngine-Tutorial-v1.1.zip
 
 ---
 
+## License
+
+插件代码与文档采用 MIT License。详见仓库根目录 `LICENSE`。
+
+> Minecraft 与不死图腾原始美术属于 Mojang Studios；品牌图腾素材不改变其原始权利归属。
+
+---
+
 **NowHere Studios** · *Still here.*

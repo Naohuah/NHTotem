@@ -100,6 +100,14 @@ Java 字节码 17；运行 Java 17+，Minecraft 26.1+ 服务端需要 Java 25+�
 
 ---
 
+## License
+
+插件代码与文档采用 **MIT License**，详见 [LICENSE](LICENSE)。
+
+> Minecraft 与不死图腾原始美术属于 Mojang Studios；`docs/brand/` 中的图腾衍生图仅作为本项目品牌素材，MIT 不改变其原始权利归属。
+
+---
+
 <p align="center">
   <b>NowHere Studios</b> · NHTotem · <i>Still here.</i><br>
   <sub>主色 #79B652</sub>

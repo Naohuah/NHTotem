@@ -12,6 +12,14 @@
     <name>NHTotem</name>
     <description>NowHere Studios | NHTotem - 死亡不掉落图腾，支持 Paper/Spigot 1.20.1 ~ 26.3</description>
 
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>net.nowherestudios</groupId>
+    <artifactId>nhtotem</artifactId>
+    <version>0.1.3</version>
+    <packaging>jar</packaging>
+
+    <name>NHTotem</name>
+    <description>NowHere Studios | NHTotem - 死亡不掉落图腾，支持 Paper/Spigot 1.20.1 ~ 26.3</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.release>17</maven.compiler.release>
+        <paper.api.version>26.3.build.239-stable</paper.api.version>
+        <mockbukkit.version>4.119.0</mockbukkit.version>
+        <junit.version>6.1.3</junit.version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>${paper.api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockbukkit.mockbukkit</groupId>
+            <artifactId>mockbukkit-v26.3</artifactId>
+            <version>${mockbukkit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>NHTotem-${project.version}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                    <encoding>UTF-8</encoding>
+                    <!-- JDK 26 的进程内 javac 偶尔会对较大测试类触发内部错误；fork 更稳。 -->
+                    <fork>true</fork>
+                    <compilerArgs>
+                        <arg>-Xlint:deprecation</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.6.1</version>
+                <configuration>
+                    <!--
+                      MockBukkit 通过 URLClassLoader 从 jar 加载插件；如果 target/classes 也在
+                      surefire 的 classpath 上，父加载器会先加载插件类，JavaPlugin 会拒绝初始化。
+                      这里把 classesDirectory 指到一个空目录，让插件只能从测试里生成的 jar 加载。
+                    -->
+                    <classesDirectory>${project.build.directory}/empty-classes</classesDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

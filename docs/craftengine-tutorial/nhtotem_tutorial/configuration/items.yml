@@ -1,0 +1,73 @@
+# NHTotem × CraftEngine 教程物品（v1.1）
+#
+# 每个物品的结构：
+#   命名空间:物品ID:
+#     material: 原版底材（图腾必须是 totem_of_undying）
+#     data.item_name / data.lore: MiniMessage 文本
+#     texture: 命名空间:item/贴图文件名（不带 .png）
+#
+# 注意：NHTotem 会用自己的 config.yml 覆盖显示名和 Lore；
+# 这里写的是“没接 NHTotem 时”的物品说明。
+items:
+  nhtotem_tutorial:totem_gold:
+    material: totem_of_undying
+    data:
+      item_name: "<!i><gold>不死图腾·金"
+      lore:
+        - "<!i><gray>基础款：保留物品栏与经验"
+        - "<!i><dark_gray>不掉落 · 不清诅咒 · 全维度"
+    texture: nhtotem_tutorial:item/totem_gold
+
+  nhtotem_tutorial:totem_ruby:
+    material: totem_of_undying
+    data:
+      item_name: "<!i><red>不死图腾·红宝石"
+      lore:
+        - "<!i><gray>净化款：保留物品，清除消失诅咒"
+        - "<!i><dark_gray>不掉落 · 清诅咒 · 全维度"
+    texture: nhtotem_tutorial:item/totem_ruby
+
+  nhtotem_tutorial:totem_sapphire:
+    material: totem_of_undying
+    data:
+      item_name: "<!i><blue>不死图腾·蓝宝石"
+      lore:
+        - "<!i><gray>风险款：每件物品 5% 概率掉落"
+        - "<!i><dark_gray>保留大部分 · 全维度"
+    texture: nhtotem_tutorial:item/totem_sapphire
+
+  nhtotem_tutorial:totem_amethyst:
+    material: totem_of_undying
+    data:
+      item_name: "<!i><light_purple>不死图腾·紫水晶"
+      lore:
+        - "<!i><gray>下界禁用：下界死亡不触发"
+        - "<!i><dark_gray>主世界/末地生效"
+    texture: nhtotem_tutorial:item/totem_amethyst
+
+  nhtotem_tutorial:totem_emerald:
+    material: totem_of_undying
+    data:
+      item_name: "<!i><green>不死图腾·绿宝石"
+      lore:
+        - "<!i><gray>命令款：死亡/重生执行命令"
+        - "<!i><dark_gray>不掉落 · 全维度"
+    texture: nhtotem_tutorial:item/totem_emerald
+
+  nhtotem_tutorial:totem_rose:
+    material: totem_of_undying
+    data:
+      item_name: "<!i><#FF7AA2>不死图腾·玫瑰金"
+      lore:
+        - "<!i><gray>主世界专用：下界/末地不触发"
+        - "<!i><dark_gray>保留物品 · 仅主世界"
+    texture: nhtotem_tutorial:item/totem_rose
+
+  nhtotem_tutorial:totem_obsidian:
+    material: totem_of_undying
+    data:
+      item_name: "<!i><gray>不死图腾·黑曜石"
+      lore:
+        - "<!i><gray>全功能：不掉落 + 清诅咒"
+        - "<!i><dark_gray>全维度 · 管理员推荐"
+    texture: nhtotem_tutorial:item/totem_obsidian

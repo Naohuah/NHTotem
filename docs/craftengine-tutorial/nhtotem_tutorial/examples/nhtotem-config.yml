@@ -1,0 +1,117 @@
+# ============================================================
+#  NHTotem × CraftEngine 教程配置（v1.1）
+#
+#  这 7 个图腾用的是同一套 NHTotem 核心逻辑：
+#    死亡时消耗 1 个图腾，保留物品栏与经验。
+#  下面的“功能”是通过每个图腾自己的配置项实现的，
+#  不是颜色本身自带的效果，可以自由修改。
+# ============================================================
+
+settings:
+  # 全局：是否保留经验等级（所有图腾共用，不能单独给某个颜色关）
+  keep-level: true
+  # 全局：触发时播放不死图腾的复活粒子/音效
+  totem-effect: true
+  # 全局：死亡/重生命令以控制台身份执行
+  commands-as-console: true
+  # 全局：随机掉落的处理方式：drop=掉在地上，delete=直接删除
+  drop-mode: drop
+  # 全局：输出更多调试日志
+  debug: false
+
+totems:
+  # 1. 基础款：保留物品栏与经验，不掉落、不清诅咒、全维度生效
+  "&6不死图腾·金":
+    id: "ce_totem_gold"
+    material: "CE:nhtotem_tutorial:totem_gold"
+    lore:
+      - "&7基础款：保留物品栏与经验"
+      - "&8不掉落 · 不清诅咒 · 全维度"
+    drop-probability: 0.0
+    clear-curse: false
+    disabled-worlds: []
+    death-commands: []
+    respawn-commands: []
+
+  # 2. 净化款：保留物品，但清除带“消失诅咒”的物品（原版行为）
+  "&c不死图腾·红宝石":
+    id: "ce_totem_ruby"
+    material: "CE:nhtotem_tutorial:totem_ruby"
+    lore:
+      - "&7净化款：保留物品，清除消失诅咒"
+      - "&8不掉落 · 清诅咒 · 全维度"
+    drop-probability: 0.0
+    clear-curse: true
+    disabled-worlds: []
+    death-commands: []
+    respawn-commands: []
+
+  # 3. 风险款：每件物品 5% 概率掉在死亡地点（不是总共 5%）
+  "&9不死图腾·蓝宝石":
+    id: "ce_totem_sapphire"
+    material: "CE:nhtotem_tutorial:totem_sapphire"
+    lore:
+      - "&7风险款：每件物品 5% 概率掉落"
+      - "&8保留大部分 · 全维度"
+    drop-probability: 0.05
+    clear-curse: false
+    disabled-worlds: []
+    death-commands: []
+    respawn-commands: []
+
+  # 4. 下界禁用：在下界死亡时图腾不触发，正常掉落
+  "&d不死图腾·紫水晶":
+    id: "ce_totem_amethyst"
+    material: "CE:nhtotem_tutorial:totem_amethyst"
+    lore:
+      - "&7下界禁用：下界死亡不触发"
+      - "&8主世界/末地生效"
+    drop-probability: 0.0
+    clear-curse: false
+    disabled-worlds:
+      - "world_nether"
+    death-commands: []
+    respawn-commands: []
+
+  # 5. 命令款：死亡/重生时执行命令，演示 %player% 占位符
+  "&a不死图腾·绿宝石":
+    id: "ce_totem_emerald"
+    material: "CE:nhtotem_tutorial:totem_emerald"
+    lore:
+      - "&7命令款：死亡/重生执行命令"
+      - "&8不掉落 · 全维度"
+    drop-probability: 0.0
+    clear-curse: false
+    disabled-worlds: []
+    death-commands:
+      - "say %player% 使用绿宝石图腾活了下来！"
+    respawn-commands:
+      - "say %player% 已重生"
+
+  # 6. 主世界专用：下界/末地都不触发
+  "&#FF7AA2不死图腾·玫瑰金":
+    id: "ce_totem_rose"
+    material: "CE:nhtotem_tutorial:totem_rose"
+    lore:
+      - "&7主世界专用：下界/末地不触发"
+      - "&8保留物品 · 仅主世界"
+    drop-probability: 0.0
+    clear-curse: false
+    disabled-worlds:
+      - "world_nether"
+      - "world_the_end"
+    death-commands: []
+    respawn-commands: []
+
+  # 7. 全功能：不掉落 + 清诅咒 + 全维度，适合管理员/高级奖励
+  "&8不死图腾·黑曜石":
+    id: "ce_totem_obsidian"
+    material: "CE:nhtotem_tutorial:totem_obsidian"
+    lore:
+      - "&7全功能：不掉落 + 清诅咒"
+      - "&8全维度 · 管理员推荐"
+    drop-probability: 0.0
+    clear-curse: true
+    disabled-worlds: []
+    death-commands: []
+    respawn-commands: []

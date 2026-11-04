@@ -1,0 +1,5 @@
+author: NowHere Studios
+description: NHTotem × CraftEngine 图腾材质与功能教程包
+version: '1.1'
+namespace: nhtotem_tutorial
+enable: true

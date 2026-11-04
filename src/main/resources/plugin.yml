@@ -1,0 +1,58 @@
+name: NHTotem
+version: '${project.version}'
+main: net.nowherestudios.nhtotem.NHTotem
+api-version: '1.20'
+description: NowHere Studios | 死亡不掉落图腾
+authors: [ NowHere Studios ]
+softdepend: [ CraftEngine ]
+commands:
+  nhtotem:
+    description: NHTotem 主命令
+    usage: /nhtotem <reload|give|list>
+    aliases: [ nht, nowheretotem ]
+    permission: nhtotem.command.use
+  qcyreload:
+    description: 旧版重载命令（兼容保留）
+    usage: /qcyreload
+    permission: nhtotem.command.reload
+  gettotem:
+    description: 旧版图腾发放命令（兼容保留）
+    usage: /gettotem <图腾名称> [玩家]
+    permission: nhtotem.command.give
+permissions:
+  nhtotem.command.use:
+    description: 允许使用 /nhtotem
+    default: op
+  nhtotem.command.reload:
+    description: 允许重载配置
+    default: op
+  nhtotem.command.give:
+    description: 允许发放图腾
+    default: op
+  nowheretotem.command.use:
+    description: 兼容 NowHereTotem 2.1 的权限
+    default: op
+    children:
+      nhtotem.command.use: true
+      nhtotem.command.reload: true
+      nhtotem.command.give: true
+  nowheretotem.command.reload:
+    description: 兼容 NowHereTotem 2.1 的重载权限
+    default: op
+    children:
+      nhtotem.command.reload: true
+  nowheretotem.command.give:
+    description: 兼容 NowHereTotem 2.1 的发放权限
+    default: op
+    children:
+      nhtotem.command.give: true
+  qcytotem.command.reload:
+    description: 兼容 QcyTotem 1.1/2.0 的重载权限
+    default: op
+    children:
+      nhtotem.command.reload: true
+  qcytotem.command.gettotem:
+    description: 兼容 QcyTotem 1.1/2.0 的发放权限
+    default: op
+    children:
+      nhtotem.command.give: true

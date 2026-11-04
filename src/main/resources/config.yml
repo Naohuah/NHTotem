@@ -1,0 +1,60 @@
+# ============================================================
+#  NHTotem 0.1.3 - NowHere Studios
+#  死亡不掉落图腾：带着图腾死亡，消耗一个图腾并保留物品栏。
+#  从 NowHereTotem 2.1 或 QcyTotem 1.1 / 2.0 升级时，旧配置会自动迁移。
+#  支持 & 颜色代码与 &#RRGGBB 十六进制颜色
+# ============================================================
+
+settings:
+  # 保留经验等级（原版 keepInventory 不保留经验，这里默认保留）
+  keep-level: true
+  # 触发图腾时播放不死图腾的复活粒子/音效
+  totem-effect: true
+  # 死亡/重生命令以控制台身份执行（推荐开启；关闭则伪装成玩家执行）
+  commands-as-console: true
+  # 随机“掉落”的物品种类：
+  #   drop   = 掉落在死亡地点（推荐，符合“随机掉落概率”的描述）
+  #   delete = 直接删除（1.1 旧版本的错误行为，仅为兼容保留）
+  drop-mode: drop
+  # 输出更多调试日志
+  debug: false
+
+totems:
+  # 图腾的配置名就是物品的显示名（支持颜色代码）
+  "&e图腾A":
+    # 可选：稳定标识。以后修改显示名时保留这个值，已经发出去的图腾仍然能识别；
+    # 不写则默认使用上面的配置名（改名后旧图腾会失效）。
+    # id: "totem_a"
+    # 物品材质；原版材质写 PAPER，CraftEngine 物品写 CE:命名空间:物品ID，
+    # ItemsAdder 物品写 IA:命名空间:物品ID
+    # 例如：material: "CE:myitems:totem"
+    material: PAPER
+    lore:
+      - "&7不清除被诅咒的物品"
+      - "&7随机掉落概率: 10%"
+    # 每件物品被“随机掉落”的概率，取值 0.0 ~ 1.0
+    drop-probability: 0.1
+    # true = 死亡时清除带有“消失诅咒”的物品（与原版一致）；false = 保留
+    clear-curse: false
+    # 在这些世界中死亡时图腾不生效
+    disabled-worlds:
+      - "world_nether"
+    # 死亡时执行的命令，%player% 玩家名，%world% 世界名，%totem% 图腾名
+    death-commands:
+      - "say %player% 死了!"
+    # 重生时执行的命令
+    respawn-commands:
+      - "say %player% 重生了"
+
+  "&b图腾B":
+    material: BLAZE_POWDER
+    lore:
+      - "&7随机掉落概率: 5%"
+    drop-probability: 0.05
+    clear-curse: true
+    disabled-worlds:
+      - "world_nether"
+    death-commands:
+      - "say %player% 死了!"
+    respawn-commands:
+      - "say %player% 重生了"

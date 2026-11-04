@@ -108,7 +108,4 @@ Java 字节码 17；运行 Java 17+，Minecraft 26.1+ 服务端需要 Java 25+�
 
 ---
 
-<p align="center">
-  <b>NowHere Studios</b> · NHTotem · <i>Still here.</i><br>
-  <sub>主色 #79B652</sub>
-</p>
+NowHere Studios · NHTotem

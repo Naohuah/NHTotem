@@ -4,43 +4,44 @@
   <img src="docs/brand/totem/nhtotem-logo-green-256.png" width="180" alt="NHTotem">
 </p>
 
-<p align="center">
-  <b>死亡不是终点。</b><br>
-  带着图腾倒下，消耗 1 个图腾，保留物品栏与经验。<br>
-  Paper / Purpur · 1.20.1 – 26.3
-</p>
+NHTotem 是一个死亡保护插件。玩家死亡时，如果背包里带着配置好的图腾，就消耗一个，保留物品栏和经验。
 
-NHTotem 是 **NowHere Studios** 维护的死亡掉落保护插件。它把“死亡不掉落”做成可配置的图腾系统：图腾放在主背包或副手即可，死亡时自动消耗 1 个，保留物品栏与经验。
+它适合不想直接开 `keepInventory` 的服务器：死亡还是要有代价，但没必要把整包东西都爆掉。图腾可以放在主背包或副手，不需要拿在主手。你可以把它当消耗品发给玩家、放进商店，或者只作为副本和活动奖励。
 
-同时处理了 Paper/Purpur 在死亡事件后仍按 `getDrops()` 生成掉落物的问题，避免“物品保留了，但又掉了一份”的刷物品漏洞。
+## 它怎么工作
 
----
+玩家死亡时，NHTotem 会扫描主背包、盔甲槽和副手。找到配置好的图腾后，扣掉一个，保留物品栏和经验。
 
-## 核心功能
+每个图腾可以单独设置掉落概率、是否清除消失诅咒、禁用世界，以及死亡和重生时执行的命令。比如可以让金图腾全保留，让红宝石图腾的每件物品有 5% 概率掉落，或者让蓝宝石图腾在下界不生效。
 
-- **死亡保命**：消耗 1 个图腾，保留物品栏与经验。
-- **图腾放哪都行**：主背包或副手，不需要拿在主手。
-- **每个图腾独立配置**：随机掉落、清诅咒、禁用世界、死亡/重生命令。
-- **自定义材质**：原版材质，或 CraftEngine `CE:` / ItemsAdder `IA:`。
-- **配置重载**：改完配置执行 `/nhtotem reload`，不需要重启。
-- **单 jar**：无 ProtocolLib / PlaceholderAPI 硬依赖。
+死亡事件里有两个容易踩的坑：
 
----
+- `setKeepInventory(true)` 不会阻止 `getDrops()` 继续生成掉落物。NHTotem 会清空这些掉落，避免“物品保留了，地上又掉一份”。
+- `setKeepLevel(true)` 不会阻止经验掉落。NHTotem 会同时把死亡事件的掉落经验清零。
 
 ## 快速开始
 
 1. 停服，把 `NHTotem-0.1.4.jar` 放进 `plugins/`。
 2. 启动服务器。
-3. 编辑 `plugins/NHTotem/config.yml`：
+3. 编辑 `plugins/NHTotem/config.yml`。
+
+最小配置：
 
 ```yaml
 totems:
   "&6不死图腾·金":
+    id: "totem_gold"
     material: "CE:nhtotem_tutorial:totem_gold"
     drop-probability: 0.0
 ```
 
-> 没用 CraftEngine 就写 `material: TOTEM_OF_UNDYING`。
+`id` 可以不写，但建议写。以后改图腾显示名时，已经发到玩家手里的旧物品还能继续识别。
+
+不用 CraftEngine 的话，材质直接写原版：
+
+```yaml
+material: TOTEM_OF_UNDYING
+```
 
 4. 重载并发放：
 
@@ -49,64 +50,65 @@ totems:
 /nhtotem give 不死图腾·金 <玩家名>
 ```
 
-玩家带着图腾死亡时，图腾 -1，物品栏与经验保留。
-
----
+图腾名可以带空格。不写玩家名时，命令会发给自己。
 
 ## 兼容性
 
-| 服务端 | 状态 |
-| --- | --- |
-| Paper / Purpur 1.20.1 – 26.3 | ✅ 实测 |
-| Spigot 1.20.1+ | 🟡 Bukkit API 理论兼容，未完整真机回归 |
-| CraftEngine 26.9.2 | ✅ 软兼容，可选 |
-| ItemsAdder | 🟡 反射软兼容，可选 |
-| Folia | ❌ 不支持 |
+Paper 和 Purpur 的 1.20.1、1.21.4、26.3 都实际跑过。Spigot 走的是同一套 Bukkit API，理论上能用，但我没在上面做同样的真机死亡测试。如果遇到问题，带上服务端版本和配置里的对应段落开 issue。
 
-Java 字节码 17；运行 Java 17+，Minecraft 26.1+ 服务端需要 Java 25+。
+Folia 不支持。
 
----
+CraftEngine 26.9.2 测试过。ItemsAdder 用反射做软兼容，如果它的 API 大改，这边可能需要跟着更新。
+
+Java 字节码是 17，运行 Java 17+ 即可；Minecraft 26.1+ 的服务端需要 Java 25+。
 
 ## 命令
 
-| 命令 | 说明 |
-| --- | --- |
-| `/nhtotem list` | 列出已加载图腾 |
-| `/nhtotem give <图腾> [玩家]` | 发放图腾 |
-| `/nhtotem reload` | 重载配置 |
+```text
+/nhtotem list
+/nhtotem give <图腾> [玩家]
+/nhtotem reload
+```
 
-权限默认仅 OP；玩家触发图腾不需要权限。
+权限默认只有 OP。玩家触发图腾不需要权限。
 
----
+## 自定义物品
+
+CraftEngine：
+
+```yaml
+material: "CE:nhtotem_tutorial:totem_gold"
+```
+
+ItemsAdder：
+
+```yaml
+material: "IA:namespace:item_id"
+```
+
+仓库里带了一个 CraftEngine 教程包，包含 7 种颜色的图腾材质、物品定义和 7 份功能配置。可以直接用，也可以把贴图换成自己的。它只是起步模板，不带经济系统或完整的成长线。
 
 ## 文档
 
-| 文档 | 内容 |
-| --- | --- |
-| [安装与使用](docs/USAGE.md) | 安装、发放、玩家用法、测试流程 |
-| [配置说明](docs/CONFIGURATION.md) | 全部字段、示例、占位符 |
-| [CraftEngine 对接](docs/CRAFTENGINE.md) | CE 物品、材质、7 色教程包 |
-| [常见问题](docs/FAQ.md) | 掉落、动画、随机概率、Folia 等 |
-| [开发与测试](docs/DEVELOPMENT.md) | 构建、测试、兼容性记录 |
-| [English introduction](docs/INTRO_EN.md) | English overview and SpigotMC page copy |
-| [CraftEngine 教程包](docs/craftengine-tutorial/nhtotem_tutorial/README.md) | 7 种配色 + 功能预设 + 材质替换 |
-
----
+- [安装与使用](docs/USAGE.md)
+- [配置说明](docs/CONFIGURATION.md)
+- [CraftEngine 对接](docs/CRAFTENGINE.md)
+- [常见问题](docs/FAQ.md)
+- [开发与测试](docs/DEVELOPMENT.md)
+- [English introduction](docs/INTRO_EN.md)
+- [CraftEngine 教程包](docs/craftengine-tutorial/nhtotem_tutorial/README.md)
 
 ## 开发
 
-- 构建：`mvn package`
-- 测试：`mvn test`（24 项 MockBukkit 测试）
-- 真机：Purpur 1.20.1 / 1.21.4 / 26.3
+```bash
+mvn package
+mvn test
+```
 
----
+当前 0.1.4，24 项 MockBukkit 测试通过。
 
 ## License
 
-插件代码与文档采用 **MIT License**，详见 [LICENSE](LICENSE)。
+插件代码和文档采用 MIT License，详见 [LICENSE](LICENSE)。
 
-> Minecraft 与不死图腾原始美术属于 Mojang Studios；`docs/brand/` 中的图腾衍生图仅作为本项目品牌素材，MIT 不改变其原始权利归属。
-
----
-
-NowHere Studios · NHTotem
+Minecraft 与不死图腾原始美术属于 Mojang Studios。`docs/brand/` 里的图腾衍生图仅作为本项目品牌素材，MIT 不改变其原始权利归属。

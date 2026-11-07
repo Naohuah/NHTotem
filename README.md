@@ -88,6 +88,7 @@ Java 字节码 17；运行 Java 17+，Minecraft 26.1+ 服务端需要 Java 25+�
 | [CraftEngine 对接](docs/CRAFTENGINE.md) | CE 物品、材质、7 色教程包 |
 | [常见问题](docs/FAQ.md) | 掉落、动画、随机概率、Folia 等 |
 | [开发与测试](docs/DEVELOPMENT.md) | 构建、测试、兼容性记录 |
+| [English introduction](docs/INTRO_EN.md) | English overview and SpigotMC page copy |
 | [CraftEngine 教程包](docs/craftengine-tutorial/nhtotem_tutorial/README.md) | 7 种配色 + 功能预设 + 材质替换 |
 
 ---

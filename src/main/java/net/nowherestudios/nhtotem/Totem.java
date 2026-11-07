@@ -94,6 +94,10 @@ public final class Totem {
         }
 
         String materialName = section.getString("material", "PAPER");
+        if (materialName == null) {
+            materialName = "PAPER";
+        }
+        materialName = materialName.trim();
         ItemStack base = createBaseItem(materialName, plugin);
 
         List<String> lore = new ArrayList<>();
@@ -126,10 +130,12 @@ public final class Totem {
         tagged.setItemMeta(taggedMeta);
 
         double probability = section.getDouble("drop-probability", 0.0D);
-        if (probability < 0.0D || probability > 1.0D) {
+        if (!Double.isFinite(probability) || probability < 0.0D || probability > 1.0D) {
             plugin.getLogger().warning("图腾 '" + id + "' 的 drop-probability=" + probability
-                    + " 超出 0.0~1.0 范围，已自动修正。");
-            probability = Math.max(0.0D, Math.min(1.0D, probability));
+                    + " 无效，已自动修正到 0.0~1.0 范围。");
+            probability = Double.isFinite(probability)
+                    ? Math.max(0.0D, Math.min(1.0D, probability))
+                    : 0.0D;
         }
 
         Set<String> worlds = new HashSet<>();

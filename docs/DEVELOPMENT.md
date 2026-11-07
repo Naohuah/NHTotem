@@ -20,7 +20,7 @@ mvn package
 产物：
 
 ```text
-target/NHTotem-0.1.3.jar
+target/NHTotem-0.1.4.jar
 ```
 
 首次构建需要联网下载 Paper API、MockBukkit 和 Maven 插件。
@@ -33,7 +33,7 @@ target/NHTotem-0.1.3.jar
 mvn test
 ```
 
-当前：**19 项 MockBukkit 测试**（Paper 26.3 API），全部通过。
+当前：**24 项 MockBukkit 测试**（Paper 26.3 API），全部通过。
 
 覆盖：
 
@@ -56,6 +56,11 @@ mvn test
 17. 非法材质回退 PAPER
 18. 动画临时主手还原，不复制物品
 19. 图腾在副槽时动画还原主手武器
+20. 保留经验时同时清零 `droppedExp`
+21. 带空格的图腾名发放
+22. 重复稳定 `id` 拒绝加载
+23. `NaN` 掉落概率回退为 0.0
+24. 重生世界被禁用时仍执行重生命令
 
 ---
 
@@ -90,9 +95,12 @@ src/main/java/net/nowherestudios/nhtotem/
 ## 已知限制
 
 - 图腾名不能包含 `.`。
+- 图腾在主背包/副手/盔甲槽中会被扫描；光标上的物品和合成格不在扫描范围内。
+- 多个图腾同时存在时，按配置顺序选择，不按手持槽位优先。
 - `keep-level` 是全局设置。
 - `drop-probability` 是每件物品独立判定。
 - `clear-curse` 会销毁诅咒物品。
 - 不支持 Folia。
 - 动画依赖客户端模型和资源包，不能保证所有客户端都显示自定义材质。
 - CraftEngine / ItemsAdder 使用反射，第三方 API 变更时可能回退 PAPER。
+- 命令消息和启动横幅目前是中文，英文客户端会看到中文提示。

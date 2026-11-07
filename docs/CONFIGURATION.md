@@ -65,7 +65,7 @@ settings:
 | `id` | string | 否 | 稳定 PDC 标识；不写则等于配置名。改名时保留它，旧图腾仍有效 |
 | `material` | string | 是 | 原版材质 / `CE:命名空间:物品ID` / `IA:命名空间:物品ID` |
 | `lore` | string list | 否 | 鼠标悬停文本，支持颜色代码 |
-| `drop-probability` | double | 否 | 每件物品独立掉落概率，`0.0` – `1.0`，默认 `0.1` |
+| `drop-probability` | double | 否 | 每件物品独立掉落概率，`0.0` – `1.0`，省略时为 `0.0` |
 | `clear-curse` | boolean | 否 | `true` 清除带“消失诅咒”的物品（销毁，不是掉落），默认 `false` |
 | `disabled-worlds` | string list | 否 | 这些世界死亡不触发 |
 | `death-commands` | string list | 否 | 死亡时执行 |

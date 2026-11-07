@@ -24,6 +24,8 @@ SLATE = (148, 163, 184, 255)
 MUTED = (100, 116, 139, 255)
 CYAN = (34, 211, 238, 255)
 GREEN = (65, 230, 124, 255)
+BRAND = (121, 182, 82, 255)
+BRAND_LIGHT = (192, 224, 166, 255)
 GOLD = (242, 201, 76, 255)
 RED = (248, 113, 113, 255)
 PURPLE = (192, 132, 252, 255)
@@ -209,7 +211,7 @@ def cross_icon(d, cx, cy, size, color):
     d.line([(px(cx - size), px(cy + size)), (px(cx + size), px(cy - size))], fill=color, width=px(3))
 
 
-def footer(d, left="NowHere Studios  ·  开发与维护", right="NHTotem 0.1.3  ·  1200 × 750"):
+def footer(d, left="NowHere Studios  ·  开发与维护", right="NHTotem 0.1.4  ·  1200 × 750"):
     d.line([(px(60), px(694)), (px(1140), px(694))], fill=(51, 65, 85, 160), width=1)
     text(d, (60, 708), left, font(F_CN, 17), (100, 116, 139, 255))
     text(d, (1140, 708), right, font(F_EN_B, 14), (71, 85, 105, 255), anchor="ra")
@@ -248,13 +250,13 @@ def banner_hero():
 
     x = 68
     y = 470
-    for label in ("Paper / Purpur / Spigot", "1.20.1 – 26.3", "v0.1.3"):
+    for label in ("Paper / Purpur / Spigot", "1.20.1 – 26.3", "v0.1.4"):
         w = pill(d, x, y, label, f_chip, (226, 232, 240, 255), h=40)
         x += w + 10
 
     d.line([(px(66), px(658)), (px(520), px(658))], fill=(51, 65, 85, 180), width=1)
     text(d, (66, 678), "NowHere Studios  ·  开发与维护", f_foot, (148, 163, 184, 255))
-    text(d, (1134, 678), "v0.1.3", f_small, (100, 116, 139, 255), anchor="ra")
+    text(d, (1134, 678), "v0.1.4", f_small, (100, 116, 139, 255), anchor="ra")
 
     totem = load_totem(540)
     paste_totem(img, totem, (922, 390), CYAN, 220, 760)
@@ -303,7 +305,7 @@ def banner_features():
 
     d.line([(px(60), px(674)), (px(1140), px(674))], fill=(51, 65, 85, 160), width=1)
     text(d, (60, 690), "Paper / Purpur / Spigot  ·  1.20.1 – 26.3  ·  Java 17+", font(F_EN_B, 14), (148, 163, 184, 255))
-    text(d, (1140, 690), "v0.1.3", font(F_EN_B, 14), (100, 116, 139, 255), anchor="ra")
+    text(d, (1140, 690), "v0.1.4", font(F_EN_B, 14), (100, 116, 139, 255), anchor="ra")
 
     add_vignette(img, 110)
     img.convert("RGB").resize((W, H), Image.LANCZOS).save(OUT / "02-features.png")
@@ -374,7 +376,7 @@ def banner_quickstart():
     f_step = font(F_CN_B, 22)
     f_desc = font(F_CN, 16)
     steps = [
-        ("1", "放入 NHTotem-0.1.3.jar", "丢进服务器的 plugins/ 文件夹"),
+        ("1", "放入 NHTotem-0.1.4.jar", "丢进服务器的 plugins/ 文件夹"),
         ("2", "启动服务器", "自动迁移 QcyTotem / NowHereTotem 配置"),
         ("3", "输入 /nhtotem reload", "完成，开始使用"),
     ]
@@ -443,9 +445,82 @@ def banner_brand():
     print("saved 05-brand.png")
 
 
+def banner_hero_en():
+    img = gradient_bg((5, 10, 18), (10, 27, 25))
+    add_glow(img, (1000, 430), 980, BRAND, 70)
+    add_glow(img, (560, 110), 700, CYAN, 30)
+    add_grid(img)
+    add_particles(img, 45, 77)
+
+    d = ImageDraw.Draw(img)
+    f_pill = font(F_EN_B, 15)
+    f_title = font(F_EN_B, 104)
+    f_head = font(F_EN_B, 48)
+    f_sub = font(F_EN_B, 21)
+    f_eq = font(F_EN_B, 20)
+    f_small = font(F_EN_B, 11)
+    f_chip = font(F_EN_B, 15)
+    f_foot = font(F_EN_B, 16)
+
+    label = "NOWHERE STUDIOS   /   MINECRAFT PLUGIN"
+    w = text_width(d, label, f_pill, spacing=2) / S + 50
+    rounded(d, (66, 50, 66 + w, 90), 20, fill=(13, 25, 38, 215), outline=(121, 182, 82, 130), width=1)
+    d.ellipse([px(82), px(65), px(90), px(73)], fill=BRAND)
+    text(d, (100, 70), label, f_pill, (192, 224, 166, 255), anchor="lm", spacing=2)
+
+    text(d, (64, 112), "NH", f_title, BRAND, anchor="la", shadow=3, shadow_color=(0, 0, 0, 180))
+    nh_w = text_width(d, "NH", f_title) / S
+    text(d, (64 + nh_w - 4, 112), "Totem", f_title, WHITE, anchor="la", shadow=3, shadow_color=(0, 0, 0, 180))
+
+    d.rounded_rectangle([px(68), px(228), px(224), px(234)], radius=px(3), fill=BRAND)
+    text(d, (64, 250), "DEATH IS NOT THE END.", f_head, WHITE, anchor="la")
+    text(d, (68, 322), "One totem. One more chance.", f_sub, BRAND_LIGHT)
+    text(d, (68, 352), "Keep your inventory. Keep your XP.", f_sub, (203, 213, 225, 255))
+
+    # Mechanism panel
+    panel = (66, 402, 700, 526)
+    rounded(d, panel, 16, fill=(8, 20, 25, 220), outline=(121, 182, 82, 90), width=1)
+    text(d, (84, 416), "THE MECHANIC", font(F_EN_B, 11), (121, 182, 82, 255), spacing=3)
+
+    x = 84
+    y = 452
+    for segment, color in (
+        ("1 TOTEM", BRAND),
+        ("  +  ", (100, 116, 139, 255)),
+        ("1 DEATH", WHITE),
+        ("  =  ", (100, 116, 139, 255)),
+        ("INVENTORY & XP KEPT", GOLD),
+    ):
+        text(d, (x, y), segment, f_eq, color, anchor="la")
+        x += text_width(d, segment, f_eq) / S
+
+    text(d, (84, 492), "By default. Per-totem rules can change drops, worlds, and commands.",
+         f_small, (100, 116, 139, 255), anchor="la")
+
+    # Chips
+    x = 68
+    for label in ("PAPER / PURPUR / SPIGOT", "1.20.1 - 26.3", "v0.1.4"):
+        w = pill(d, x, 552, label, f_chip, (226, 232, 240, 255), h=38, padx=16)
+        x += w + 9
+
+    # Totem
+    totem = load_totem(470)
+    paste_totem(img, totem, (960, 380), BRAND, 190, 760)
+
+    # Footer
+    d.line([(px(66), px(665)), (px(1140), px(665))], fill=(51, 65, 85, 170), width=1)
+    text(d, (66, 682), "NowHere Studios  ·  CraftEngine / ItemsAdder ready", f_foot, (148, 163, 184, 255))
+    text(d, (1134, 682), "NHTotem 0.1.4", f_foot, (100, 116, 139, 255), anchor="ra")
+
+    add_vignette(img, 110)
+    img.convert("RGB").resize((W, H), Image.LANCZOS).save(OUT / "06-hero-en.png")
+    print("saved 06-hero-en.png")
+
+
 if __name__ == "__main__":
     banner_hero()
     banner_features()
     banner_compare()
     banner_quickstart()
     banner_brand()
+    banner_hero_en()

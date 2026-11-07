@@ -31,9 +31,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -98,7 +100,8 @@ public class NHTotem extends JavaPlugin implements Listener, CommandExecutor, Ta
 
     private boolean usesCraftEngine() {
         for (Totem totem : totems) {
-            if (totem.getMaterialName().regionMatches(true, 0, "CE:", 0, 3)) {
+            String material = totem.getMaterialName();
+            if (material != null && material.regionMatches(true, 0, "CE:", 0, 3)) {
                 return true;
             }
         }
@@ -106,6 +109,9 @@ public class NHTotem extends JavaPlugin implements Listener, CommandExecutor, Ta
     }
 
     private void onCraftEngineReload() {
+        if (!isEnabled()) {
+            return;
+        }
         Bukkit.getScheduler().runTask(this, this::reloadTotemsFromCraftEngine);
     }
 
@@ -213,6 +219,7 @@ public class NHTotem extends JavaPlugin implements Listener, CommandExecutor, Ta
 
         ConfigurationSection section = getConfig().getConfigurationSection("totems");
         List<Totem> loaded = new ArrayList<>();
+        Set<String> tagIds = new HashSet<>();
         int errors = 0;
         CraftEngineHook.beginLoad();
 
@@ -235,6 +242,12 @@ public class NHTotem extends JavaPlugin implements Listener, CommandExecutor, Ta
                 }
                 try {
                     Totem totem = Totem.parse(id, totemSection, totemKey, legacyTotemKeys, this);
+                    if (!tagIds.add(totem.getTagId())) {
+                        errors++;
+                        getLogger().warning("图腾 '" + id + "' 使用了重复的 id '" + totem.getTagId()
+                                + "'，已跳过；同一个 id 会被错误地识别成前一个图腾。");
+                        continue;
+                    }
                     loaded.add(totem);
                     if (settings.debug()) {
                         getLogger().info("[debug] 已加载图腾 '" + id + "'，材质=" + totem.getMaterialName()
@@ -290,6 +303,11 @@ public class NHTotem extends JavaPlugin implements Listener, CommandExecutor, Ta
 
         event.setKeepInventory(true);
         event.setKeepLevel(settings.keepLevel());
+        if (settings.keepLevel()) {
+            // setKeepLevel() only controls the level kept at respawn; it does not
+            // stop the death event's dropped experience. Clear it explicitly.
+            event.setDroppedExp(0);
+        }
         // Paper/Purpur 在事件结束后仍可能按 getDrops() 生成掉落物。
         // 保留物品栏时必须清空，否则玩家会“既保留物品又掉一份”，形成刷物品漏洞。
         event.getDrops().clear();
@@ -317,11 +335,9 @@ public class NHTotem extends JavaPlugin implements Listener, CommandExecutor, Ta
             return;
         }
 
-        World respawnWorld = event.getRespawnLocation().getWorld();
-        String worldName = respawnWorld != null ? respawnWorld.getName() : player.getWorld().getName();
-        if (pending.totem.isDisabledIn(worldName)) {
-            return;
-        }
+        // The totem was already validated against the death world in onPlayerDeath().
+        // The respawn world must not suppress the respawn commands (a player can
+        // respawn at an anchor located in a different, disabled world).
         runCommands(player, pending.totem, pending.totem.getRespawnCommands(), "重生");
     }
 
@@ -567,7 +583,7 @@ public class NHTotem extends JavaPlugin implements Listener, CommandExecutor, Ta
         sender.sendMessage(PREFIX + "\u00a7b/nhtotem reload \u00a78- \u00a77重载配置");
         sender.sendMessage(PREFIX + "\u00a7b/nhtotem give <图腾> [玩家] \u00a78- \u00a77发放图腾");
         sender.sendMessage(PREFIX + "\u00a7b/nhtotem list \u00a78- \u00a77列出图腾");
-        sender.sendMessage(PREFIX + "\u00a78旧命令 /qcyreload 与 /gettotem 仍然可用");
+        sender.sendMessage(PREFIX + "\u00a7b/nhtotem help \u00a78- \u00a77显示帮助");
     }
 
     private void noPermission(CommandSender sender) {
@@ -601,29 +617,38 @@ public class NHTotem extends JavaPlugin implements Listener, CommandExecutor, Ta
     private boolean giveTotem(CommandSender sender, String[] args) {
         if (args.length == 0) {
             sendTotemList(sender);
-            sender.sendMessage(PREFIX + "\u00a77用法: /gettotem <图腾名称> [玩家]");
+            sender.sendMessage(PREFIX + "\u00a77用法: /nhtotem give <图腾名称> [玩家]");
             return true;
         }
 
-        Totem totem = findByName(args[0]);
+        // Totem names may contain spaces (for example "Totem of Gold").
+        // Treat the last argument as the target only when it is an online player,
+        // and join the remaining arguments as the totem name.
+        Player target = null;
+        int nameEnd = args.length;
+        if (args.length >= 2) {
+            Player candidate = Bukkit.getPlayerExact(args[args.length - 1]);
+            if (candidate != null) {
+                target = candidate;
+                nameEnd = args.length - 1;
+            }
+        }
+
+        String requestedName = String.join(" ", Arrays.copyOfRange(args, 0, nameEnd));
+        Totem totem = findByName(requestedName);
         if (totem == null) {
-            sender.sendMessage(PREFIX + "\u00a7c找不到图腾: " + args[0]);
+            sender.sendMessage(PREFIX + "\u00a7c找不到图腾: " + requestedName);
             sendTotemList(sender);
             return true;
         }
 
-        Player target;
-        if (args.length >= 2) {
-            target = Bukkit.getPlayerExact(args[1]);
-            if (target == null) {
-                sender.sendMessage(PREFIX + "\u00a7c玩家不在线: " + args[1]);
+        if (target == null) {
+            if (sender instanceof Player) {
+                target = (Player) sender;
+            } else {
+                sender.sendMessage(PREFIX + "\u00a7c控制台用法: /nhtotem give <图腾名称> <玩家>");
                 return true;
             }
-        } else if (sender instanceof Player) {
-            target = (Player) sender;
-        } else {
-            sender.sendMessage(PREFIX + "\u00a7c控制台用法: /gettotem <图腾名称> <玩家>");
-            return true;
         }
 
         giveItem(target, totem);

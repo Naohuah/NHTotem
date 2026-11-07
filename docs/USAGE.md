@@ -17,7 +17,7 @@
 1. 停服。
 2. 删除同名旧 NHTotem jar：
    - `NHTotem-*.jar`
-3. 把 `NHTotem-0.1.3.jar` 放进 `plugins/`。
+3. 把 `NHTotem-0.1.4.jar` 放进 `plugins/`。
 4. 启动服务器。
 5. 打开 `plugins/NHTotem/config.yml`，按 [配置说明](CONFIGURATION.md) 修改。
 6. 执行 `/nhtotem reload`。

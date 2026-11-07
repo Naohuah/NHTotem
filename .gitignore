@@ -5,3 +5,5 @@ target/
 .DS_Store
 Thumbs.db
 docs/testing/
+__pycache__/
+*.pyc

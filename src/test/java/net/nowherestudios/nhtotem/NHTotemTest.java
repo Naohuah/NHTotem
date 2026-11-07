@@ -7,6 +7,7 @@ import org.bukkit.damage.DamageType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -82,6 +83,25 @@ class NHTotemTest {
 
         // 旧品牌命令作为别名继续可用
         assertTrue(server.dispatchCommand(server.getConsoleSender(), "nowheretotem list"));
+    }
+
+    @Test
+    void keepLevelAlsoPreventsExperienceDrops() throws IOException {
+        load(defaultConfig(0.0, false, "[]"));
+        PlayerMock player = server.addPlayer("Tester");
+        giveTotem(player);
+
+        PlayerDeathEvent event = new PlayerDeathEvent(
+                player,
+                DamageSource.builder(DamageType.GENERIC).build(),
+                new ArrayList<>(),
+                100,
+                "Tester died");
+        server.getPluginManager().callEvent(event);
+
+        assertTrue(event.getKeepLevel());
+        assertEquals(0, event.getDroppedExp(),
+                "setKeepLevel 不会阻止经验掉落，必须显式把 droppedExp 清零");
     }
 
     @Test
@@ -190,6 +210,97 @@ class NHTotemTest {
         assertEquals(Material.IRON_SWORD, player.getInventory().getItemInMainHand().getType(),
                 "动画结束后必须还原主手武器");
         assertEquals(1, player.getInventory().getItemInMainHand().getAmount());
+    }
+
+    @Test
+    void giveTotemNameWithSpaces() throws IOException {
+        load("""
+                totems:
+                  "&eTotem of Gold":
+                    material: PAPER
+                    lore: []
+                    drop-probability: 0.0
+                """);
+        PlayerMock player = server.addPlayer("Tester");
+
+        assertTrue(server.dispatchCommand(server.getConsoleSender(),
+                "nhtotem give Totem of Gold Tester"));
+        assertNotNull(player.getInventory().getItem(0),
+                "带空格的图腾名应能完整解析，而不是只取第一个单词");
+    }
+
+    @Test
+    void duplicateStableIdIsRejected() throws IOException {
+        load("""
+                totems:
+                  "&eA":
+                    id: "same_id"
+                    material: PAPER
+                    lore: []
+                    drop-probability: 0.0
+                  "&eB":
+                    id: "same_id"
+                    material: PAPER
+                    lore: []
+                    drop-probability: 0.0
+                """);
+
+        // Drain startup/config warning messages before checking the list output.
+        consoleSaid("__never__");
+        assertTrue(server.dispatchCommand(server.getConsoleSender(), "nhtotem list"));
+        assertTrue(consoleSaid("A"), "第一个使用该 id 的图腾应保留");
+        assertFalse(consoleSaid("B"), "重复 id 的图腾应被拒绝加载");
+    }
+
+    @Test
+    void nanDropProbabilityFallsBackToNoDrops() throws IOException {
+        load("""
+                settings:
+                  totem-effect: false
+                totems:
+                  "&eTestTotem":
+                    material: PAPER
+                    lore: []
+                    drop-probability: .nan
+                """);
+        PlayerMock player = server.addPlayer("Tester");
+        giveTotem(player);
+        player.getInventory().setItem(1, new ItemStack(Material.DIAMOND, 3));
+
+        death(player);
+
+        assertNotNull(player.getInventory().getItem(1), "NaN 概率应回退为 0.0，不应随机掉落");
+        assertEquals(3, player.getInventory().getItem(1).getAmount());
+    }
+
+    @Test
+    void respawnCommandsRunEvenWhenRespawnWorldIsDisabled() throws IOException {
+        load("""
+                settings:
+                  totem-effect: false
+                totems:
+                  "&eTestTotem":
+                    material: PAPER
+                    lore: []
+                    drop-probability: 0.0
+                    disabled-worlds:
+                      - "world_nether"
+                    respawn-commands:
+                      - "qcyreload"
+                """);
+        WorldMock nether = server.addSimpleWorld("world_nether");
+        WorldMock deathWorld = server.addSimpleWorld("world_death");
+        PlayerMock player = server.addPlayer("Tester");
+        player.teleport(deathWorld.getSpawnLocation());
+        giveTotem(player);
+
+        death(player);
+        assertTrue(player.getInventory().getItem(0) == null, "图腾应在死亡世界被消耗");        PlayerRespawnEvent respawn = new PlayerRespawnEvent(player, nether.getSpawnLocation(), false);
+        server.getPluginManager().callEvent(respawn);
+        server.getScheduler().performOneTick();
+
+        assertTrue(consoleSaid("配置重载完成"),
+                "死亡世界生效时，即使重生世界被禁用，重生命令也应执行");
     }
 
     @Test

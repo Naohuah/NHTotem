@@ -44,7 +44,7 @@ final class ItemsAdderHook {
                 plugin.getLogger().warning("服务器未安装 ItemsAdder（或 API 不可用），配置中所有 IA: 物品都会退化为 PAPER。");
             }
             return null;
-        } catch (ReflectiveOperationException | RuntimeException e) {
+        } catch (ReflectiveOperationException | RuntimeException | LinkageError e) {
             plugin.getLogger().warning("读取 ItemsAdder 物品 '" + namespacedId + "' 失败: " + e);
             return null;
         }

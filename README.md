@@ -29,7 +29,7 @@ NHTotem 是 **NowHere Studios** 维护的死亡掉落保护插件。它把“死
 
 ## 快速开始
 
-1. 停服，把 `NHTotem-0.1.3.jar` 放进 `plugins/`。
+1. 停服，把 `NHTotem-0.1.4.jar` 放进 `plugins/`。
 2. 启动服务器。
 3. 编辑 `plugins/NHTotem/config.yml`：
 
@@ -95,7 +95,7 @@ Java 字节码 17；运行 Java 17+，Minecraft 26.1+ 服务端需要 Java 25+�
 ## 开发
 
 - 构建：`mvn package`
-- 测试：`mvn test`（19 项 MockBukkit 测试）
+- 测试：`mvn test`（24 项 MockBukkit 测试）
 - 真机：Purpur 1.20.1 / 1.21.4 / 26.3
 
 ---

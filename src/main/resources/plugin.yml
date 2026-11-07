@@ -4,7 +4,7 @@ main: net.nowherestudios.nhtotem.NHTotem
 api-version: '1.20'
 description: NowHere Studios | 死亡不掉落图腾
 authors: [ NowHere Studios ]
-softdepend: [ CraftEngine ]
+softdepend: [ CraftEngine, ItemsAdder ]
 commands:
   nhtotem:
     description: NHTotem 主命令
